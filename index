@@ -1,0 +1,58 @@
+<?php
+// fungsi untuk menghitung jarak antara dua titik
+function distance($x1, $y1, $x2, $y2) {
+    return sqrt(pow($x2 - $x1, 2) + pow($y2 - $y1, 2));
+}
+
+// array yang menyimpan koordinat titik-titik
+$points = [[1, 1], [1, 2], [2, 2], [2, 1], [3, 1]];
+
+// jumlah titik
+$n = count($points);
+
+// jumlah populasi
+$populationSize = 100;
+
+// probabilitas mutasi
+$mutationProbability = 0.01;
+
+// array untuk menyimpan populasi awal
+$population = [];
+
+// inisialisasi populasi awal
+for ($i = 0; $i < $populationSize; $i++) {
+    $population[$i] = range(0, $n - 1);
+    shuffle($population[$i]);
+}
+
+// jumlah generasi
+$generations = 10;
+
+// loop sebanyak jumlah generasi
+for ($g = 0; $g < $generations; $g++) {
+    // array untuk menyimpan fitness masing-masing individu
+    $fitness = [];
+    // hitung fitness masing-masing individu
+    for ($i = 0; $i < $populationSize; $i++) {
+        $fitness[$i] = 0;
+        for ($j = 0; $j < $n - 1; $j++) {
+            $fitness[$i] += distance($points[$population[$i][$j]][0], $points[$population[$i][$j]][1], $points[$population[$i][$j + 1]][0], $points[$population[$i][$j + 1]][1]);
+        }
+        $fitness[$i] += distance($points[$population[$i][$n - 1]][0], $points[$population[$i][$n - 1]][1], $points[$population[$i][0]][0], $points[$population[$i][0]][1]);
+    }
+}
+
+// mencari individu terbaik
+$bestFitness = PHP_INT_MAX;
+$bestIndividual = [];
+for ($i = 0; $i < $populationSize; $i++) {
+    if ($fitness[$i] < $bestFitness) {
+        $bestFitness = $fitness[$i];
+        $bestIndividual = $population[$i];
+    }
+}
+
+// menampilkan jalur terbaik dan jarak terbaik
+echo "Jalur terbaik: " . implode(" -> ", $bestIndividual) . "\n";
+echo "Jarak: " . $bestFitness . "\n";
+
